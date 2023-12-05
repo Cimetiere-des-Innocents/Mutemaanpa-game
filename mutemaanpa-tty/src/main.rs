@@ -1,4 +1,4 @@
-use mutemaanpa_lib::game_state::{GameState, run};
+use mutemaanpa_lib::game_state::{run, GameState};
 use tracing::info;
 
 fn main() {

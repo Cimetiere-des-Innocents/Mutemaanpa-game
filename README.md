@@ -11,3 +11,7 @@ cargo build
 ```
 
 构建完成之后, 再用编辑器打开 `Godot` 项目.
+
+## Git LFS
+
+注意 `assets` 文件夹下面的资料由 `Git lfs` 管理, 需要安装 `Git lfs` 才能正常下载.

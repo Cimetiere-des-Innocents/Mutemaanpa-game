@@ -44,4 +44,3 @@ impl Player {
         self.name = name.to_string();
     }
 }
-

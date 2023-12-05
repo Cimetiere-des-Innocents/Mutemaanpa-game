@@ -23,6 +23,6 @@ fn test_run() {
     let game_state = GameState {
         setting: Setting::default(),
     };
-    tracing_subscriber::fmt::init();
+    crate::tests_utils::logging_init();
     run(game_state);
 }

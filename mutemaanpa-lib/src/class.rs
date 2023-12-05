@@ -85,5 +85,3 @@ fn test_show_default_classes() {
 }
 
 const CLASS_DESCRIPTION_RESOURCE: &str = "assets/classes/classes_description.yaml";
-
-

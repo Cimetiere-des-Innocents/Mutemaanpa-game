@@ -1,0 +1,4 @@
+language: zh-cn
+fonts:
+  regular:
+    location: NotoSansSC-Regular.ttf
