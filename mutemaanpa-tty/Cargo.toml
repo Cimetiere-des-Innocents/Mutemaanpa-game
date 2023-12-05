@@ -1,12 +1,11 @@
 [package]
-name = "mutemaanpa"
+name = "mutemaanpa-tty"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[lib]
-crate-type = ["cdylib"]
-
 [dependencies]
-godot = {git = "https://github.com/godot-rust/gdext", branch = "master"}
+mutemaanpa_lib = { package = "mutemaanpa-lib", path = "../mutemaanpa-lib" }
+tracing-subscriber = "0.3.18"
+tracing = "0.1.40"
