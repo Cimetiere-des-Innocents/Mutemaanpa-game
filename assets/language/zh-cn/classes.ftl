@@ -1,5 +1,8 @@
 # Resource file for classes
 
+Base = 基础
+    .desc = 天生我材必有用...
+
 # Citizen
 
 Citizen  = 市民

@@ -8,7 +8,7 @@ pub struct LanguageSetting {
 impl Default for LanguageSetting {
     fn default() -> Self {
         Self {
-            language: "en-US".to_string(),
+            language: "en".to_string(),
         }
     }
 }

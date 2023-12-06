@@ -1,5 +1,8 @@
 # Resource file for classes
 
+Base = Base
+    .desc = You got to do something...
+
 # Citizen
 
 Citizen = Citizen

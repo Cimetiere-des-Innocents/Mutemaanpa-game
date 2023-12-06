@@ -76,7 +76,7 @@ impl assets_manager::Asset for LanguageManifest {
 /// - load translations: of course
 /// - hot reload when the translation file changes: convenient for development
 /// - hot reload when language changes: should not quit-enter to change language, that's dumb.
-struct Language {
+pub struct Language {
     pub bundle: FluentBundle<FluentResource, concurrent::IntlLangMemoizer>,
     pub locale: LanguageIdentifier,
     pub fonts: Fonts,
@@ -157,6 +157,26 @@ impl Language {
             }
         }
     }
+
+    pub fn try_get_attr(
+        &self,
+        key: &str,
+        attr: &str,
+        args: Option<&FluentArgs>,
+    ) -> Option<Cow<str>> {
+        let msg = self.bundle.get_message(key)?;
+        let mut errors = vec![];
+        let ret = self
+            .bundle
+            .format_pattern(msg.get_attribute(attr)?.value(), args, &mut errors);
+        match errors.is_empty() {
+            true => Some(ret.into()),
+            false => {
+                tracing::error!("Failed to format pattern: {:?}", errors);
+                None
+            }
+        }
+    }
 }
 
 #[test]
@@ -170,19 +190,62 @@ fn test_try_get_message() {
 }
 
 /// [`i18nProvider`] is the main interface of this module.
-#[derive(Clone, Copy)]
-struct I18nProvider {
+///
+/// Handle is where we hold the actual data, but we cannot read from it directly because the value might be
+/// changed by hot-reload. So we need to use [`assets_manager::AssetGuard`] to read from it.
+///
+/// Watcher is used to detect hot-reload. When hot-reload happens, we need to reload the data from handle,
+/// and replace the guard.
+///
+/// Hot-reloading is to be implemented.
+pub struct I18nProvider {
     handle: assets_manager::Handle<'static, Language>,
+    guard: assets_manager::AssetGuard<'static, Language>,
     watcher: assets_manager::ReloadWatcher<'static>,
 }
 
 impl I18nProvider {
+    const MISSING_MSG: &'static str = "MISSING";
+
     pub fn load(lang: &str) -> Result<Self, anyhow::Error> {
         let handle = Language::load(lang)?;
-        Ok(Self { handle, watcher: handle.reload_watcher() })
+        Ok(Self {
+            handle,
+            guard: handle.read(),
+            watcher: handle.reload_watcher(),
+        })
     }
 
     pub fn reloaded(&mut self) -> bool {
         self.watcher.reloaded()
+    }
+
+    fn try_get_msg(&self, key: &str, args: Option<&FluentArgs>) -> Option<Cow<str>> {
+        self.guard.try_get_message(key, args)
+    }
+
+    pub fn get_msg_or_default(&self, key: &str, args: Option<&FluentArgs>) -> Cow<str> {
+        self.try_get_msg(key, args)
+            .unwrap_or_else(|| Self::MISSING_MSG.into())
+    }
+
+    fn get_attr(&self, key: &str, attr: &str, args: Option<&FluentArgs>) -> Option<Cow<str>> {
+        self.guard.try_get_attr(key, attr, args)
+    }
+
+    pub fn get_attr_or_default(
+        &self,
+        key: &str,
+        attr: &str,
+        args: Option<&FluentArgs>,
+    ) -> Cow<str> {
+        self.get_attr(key, attr, args)
+            .unwrap_or_else(|| Self::MISSING_MSG.into())
+    }
+}
+
+impl Default for I18nProvider {
+    fn default() -> Self {
+        Self::load("en").unwrap()
     }
 }

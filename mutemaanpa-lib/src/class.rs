@@ -1,3 +1,5 @@
+type ClassIdentifier = &'static str;
+
 /// # Classes
 ///
 /// Every player can choose to upgrade their classes when level up.
@@ -7,11 +9,11 @@
 /// Classes give player accesses to new abilities and skills.
 #[derive(Debug, Clone)]
 pub struct ClassNode {
-    pub name: &'static str,
-    children: Vec<ClassNode>,
+    pub name: ClassIdentifier,
+    pub children: Vec<ClassNode>,
 }
 
-fn class_leaf(name: &'static str) -> ClassNode {
+fn class_leaf(name: ClassIdentifier) -> ClassNode {
     ClassNode {
         name,
         children: vec![],
@@ -40,7 +42,7 @@ fn default_citizen() -> ClassNode {
         children: vec![
             class_leaf("Rogue"),
             class_leaf("Merchant"),
-            class_leaf("Craftsman"),
+            class_leaf("Craftsperson"),
         ],
     }
 }
@@ -84,4 +86,16 @@ fn test_show_default_classes() {
     println!("{:#?}", classes);
 }
 
-const CLASS_DESCRIPTION_RESOURCE: &str = "assets/classes/classes_description.yaml";
+#[derive(Debug, Clone)]
+pub struct ClassTree {
+    pub root: ClassNode
+}
+
+impl Default for ClassTree {
+    fn default() -> Self {
+        Self {
+            root: default_class_node()
+        }
+    }
+}
+
