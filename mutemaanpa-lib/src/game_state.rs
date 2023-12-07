@@ -1,4 +1,4 @@
-use crate::{class::ClassTree, i18n::I18nProvider, setting::Setting};
+use crate::{class::ClassTree, i18n::I18nProvider, setting::Setting, loader::start_hot_reload};
 use tracing::info;
 
 /// [`GameState`] stores states that shared by whole game.
@@ -26,7 +26,8 @@ impl Default for GameState {
     }
 }
 
-pub fn run(_: GameState) {
+pub fn run(_: &mut GameState) {
+    start_hot_reload();
     info!("game started")
 }
 
@@ -38,7 +39,7 @@ impl GameState {
 
 #[test]
 fn test_run() {
-    let game_state = GameState::default();
+    let mut game_state = GameState::default();
     crate::tests_utils::logging_init();
-    run(game_state);
+    run(&mut game_state);
 }

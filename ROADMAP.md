@@ -7,6 +7,7 @@
   - [x] show them in screen
   - [] read config from a config file
   - [] change language in runtime
+  - [x] hot-reload assets
 - [x] tty-bin: display text & skills in a terminal
   - [x] use i18n api
   - [x] use skills api

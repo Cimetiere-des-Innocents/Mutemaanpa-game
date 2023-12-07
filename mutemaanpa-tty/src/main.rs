@@ -1,3 +1,5 @@
+use std::thread::sleep;
+
 use mutemaanpa_lib::{
     class::ClassNode,
     game_state::{run, GameState},
@@ -8,11 +10,17 @@ use tracing::info;
 fn main() {
     tracing_subscriber::fmt::init();
     info!("tty client started");
-    let game_state = GameState::default();
+    let mut game_state = GameState::default();
     print_class_tree(&game_state);
-    run(game_state);
+    run(&mut game_state);
     info!("loop forever");
-    loop {}
+    loop {
+        if game_state.i18n.reloaded() {
+            info!("i18n reloaded");
+            print!("\x1B[2J\x1B[1;1H");
+            print_class_tree(&game_state);
+        }
+    }
 }
 
 fn print_class_tree(game_state: &GameState) {

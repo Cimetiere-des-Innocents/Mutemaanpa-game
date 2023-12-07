@@ -190,17 +190,10 @@ fn test_try_get_message() {
 }
 
 /// [`i18nProvider`] is the main interface of this module.
-///
-/// Handle is where we hold the actual data, but we cannot read from it directly because the value might be
-/// changed by hot-reload. So we need to use [`assets_manager::AssetGuard`] to read from it.
-///
-/// Watcher is used to detect hot-reload. When hot-reload happens, we need to reload the data from handle,
-/// and replace the guard.
-///
-/// Hot-reloading is to be implemented.
+/// It is used to get translated messages and fonts. The asset is given by value. We can't pass reference to ASSETS,
+/// because ASSETS can be updated by hot-reloading, which acquires a write lock, conflicting with the read lock.
 pub struct I18nProvider {
     handle: assets_manager::Handle<'static, Language>,
-    guard: assets_manager::AssetGuard<'static, Language>,
     watcher: assets_manager::ReloadWatcher<'static>,
 }
 
@@ -211,7 +204,6 @@ impl I18nProvider {
         let handle = Language::load(lang)?;
         Ok(Self {
             handle,
-            guard: handle.read(),
             watcher: handle.reload_watcher(),
         })
     }
@@ -220,25 +212,26 @@ impl I18nProvider {
         self.watcher.reloaded()
     }
 
-    fn try_get_msg(&self, key: &str, args: Option<&FluentArgs>) -> Option<Cow<str>> {
-        self.guard.try_get_message(key, args)
+    fn try_get_msg(&self, key: &str, args: Option<&FluentArgs>) -> Option<String> {
+        self.handle
+            .read()
+            .try_get_message(key, args)
+            .map(|s| s.into_owned())
     }
 
-    pub fn get_msg_or_default(&self, key: &str, args: Option<&FluentArgs>) -> Cow<str> {
+    pub fn get_msg_or_default(&self, key: &str, args: Option<&FluentArgs>) -> String {
         self.try_get_msg(key, args)
             .unwrap_or_else(|| Self::MISSING_MSG.into())
     }
 
-    fn get_attr(&self, key: &str, attr: &str, args: Option<&FluentArgs>) -> Option<Cow<str>> {
-        self.guard.try_get_attr(key, attr, args)
+    fn get_attr(&self, key: &str, attr: &str, args: Option<&FluentArgs>) -> Option<String> {
+        self.handle
+            .read()
+            .try_get_attr(key, attr, args)
+            .map(|s| s.into_owned())
     }
 
-    pub fn get_attr_or_default(
-        &self,
-        key: &str,
-        attr: &str,
-        args: Option<&FluentArgs>,
-    ) -> Cow<str> {
+    pub fn get_attr_or_default(&self, key: &str, attr: &str, args: Option<&FluentArgs>) -> String {
         self.get_attr(key, attr, args)
             .unwrap_or_else(|| Self::MISSING_MSG.into())
     }

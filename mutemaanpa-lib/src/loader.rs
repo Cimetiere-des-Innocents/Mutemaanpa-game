@@ -11,6 +11,11 @@ static ASSETS: Lazy<AssetCache> = Lazy::new(|| {
     AssetCache::new(ASSETS_DIR).unwrap()
 });
 
+pub fn start_hot_reload() {
+    info!("asset hot reload started");
+    ASSETS.enhance_hot_reloading();
+}
+
 pub trait GameAsset: Sized + Sync + Send + 'static {
     fn load(uri: &str) -> Result<assets_manager::Handle<'static, Self>>;
 }
