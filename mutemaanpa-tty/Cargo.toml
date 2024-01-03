@@ -1,0 +1,12 @@
+[package]
+name = "mutemaanpa-tty"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+mutemaanpa_lib = { package = "mutemaanpa-lib", path = "../mutemaanpa-lib" }
+tracing-subscriber = "0.3.18"
+tracing = "0.1.40"
+anyhow = "1"

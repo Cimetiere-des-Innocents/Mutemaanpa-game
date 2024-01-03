@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = [
+    "mutemaanpa-lib",
+    "mutemaanpa-tty",
+    "mutemaanpa-godot"
+]

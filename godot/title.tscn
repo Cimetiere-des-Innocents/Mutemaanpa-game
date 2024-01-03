@@ -11,5 +11,13 @@ theme_override_font_sizes/font_size = 48
 text = "Mutemaanpa"
 
 [node name="Player" type="Player" parent="."]
+_import_path = NodePath("")
+unique_name_in_owner = false
+process_mode = 0
+process_priority = 0
+process_physics_priority = 0
+process_thread_group = 0
+editor_description = ""
 position = Vector2(91, 147)
 texture = ExtResource("1_g05me")
+script = null

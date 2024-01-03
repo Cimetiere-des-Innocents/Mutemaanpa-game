@@ -1,0 +1,4 @@
+language: en
+fonts:
+  regular:
+    location: NotoSans-Regular
