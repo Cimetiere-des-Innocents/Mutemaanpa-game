@@ -11,7 +11,7 @@
 - [x] tty-bin: display text & skills in a terminal
   - [x] use i18n api
   - [x] use skills api
-  - [] render, update, handle events
+  - [x] render, update, handle events
 
 ## 0.0.2
 

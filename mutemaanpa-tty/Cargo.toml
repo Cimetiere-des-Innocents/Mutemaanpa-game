@@ -9,3 +9,4 @@ edition = "2021"
 mutemaanpa_lib = { package = "mutemaanpa-lib", path = "../mutemaanpa-lib" }
 tracing-subscriber = "0.3.18"
 tracing = "0.1.40"
+anyhow = "1"

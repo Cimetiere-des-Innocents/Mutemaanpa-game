@@ -16,7 +16,7 @@ impl Default for Setting {
 }
 
 impl Setting {
-    pub const DEFAULT_SETTINGS_PATH: &'static str = "settings";
+    pub const DEFAULT_SETTINGS_PATH: &'static str = "settings.cfg";
 
     pub fn load(path: &str) -> Result<Self, anyhow::Error> {
         let file = std::fs::File::open(path)?;

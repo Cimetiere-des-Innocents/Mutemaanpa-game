@@ -51,7 +51,7 @@ Cleric = Cleric
     .desc = They unite the team and society through ideology and myths.
 
 Gestalt = Gestalt
-    .desc = Law, discipline and efficient chains of command,
+    .desc = Law, discipline and efficient chains of commands,
 
 Priest = Priest
     .desc = Heal and gather people through their history and common faith.

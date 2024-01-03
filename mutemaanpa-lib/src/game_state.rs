@@ -1,4 +1,4 @@
-use crate::{class::ClassTree, i18n::I18nProvider, setting::Setting, loader::start_hot_reload};
+use crate::{class::ClassTree, i18n::I18nProvider, loader::start_hot_reload, setting::Setting};
 use tracing::info;
 
 /// [`GameState`] stores states that shared by whole game.
@@ -17,6 +17,9 @@ impl Default for GameState {
                 Setting::default()
             }
         };
+        setting
+            .save(Setting::DEFAULT_SETTINGS_PATH)
+            .expect("setting configuration cannot save");
         let i18n = I18nProvider::load(&setting.language.language).unwrap();
         Self {
             setting,
