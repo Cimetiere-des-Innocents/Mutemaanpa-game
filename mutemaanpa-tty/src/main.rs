@@ -4,8 +4,7 @@ use std::io::{stdin, stdout, Write};
 use anyhow::anyhow;
 use anyhow::Result;
 use mutemaanpa_lib::{
-    game_state::GameState, gameplay::class::ClassNode,
-    gameplay::class::ClassTreeDescription,
+    game_state::GameState, gameplay::class::ClassNode, gameplay::class::ClassTreeDescription,
 };
 use tracing::info;
 
