@@ -5,9 +5,8 @@
 - [x] Create a basic project structure
 - []  i18n: show some text in different languages
   - [x] show them in screen
-  - [] read config from a config file
-  - [] change language in runtime
-  - [x] hot-reload assets
+  - [x] read config from a config file
+  - [x] change language in runtime
 - [x] tty-bin: display text & skills in a terminal
   - [x] use i18n api
   - [x] use skills api

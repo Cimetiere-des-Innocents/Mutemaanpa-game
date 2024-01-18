@@ -12,8 +12,7 @@ mod tests_utils {
     }
 }
 
-pub mod class;
+pub mod data;
 pub mod game_state;
-pub mod i18n;
-pub mod loader;
+pub mod gameplay;
 mod setting;

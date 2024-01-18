@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+
+use crate::data::repository::text::TextRepository;
+
 type ClassIdentifier = &'static str;
 
 /// # Classes
@@ -11,6 +15,23 @@ type ClassIdentifier = &'static str;
 pub struct ClassNode {
     pub name: ClassIdentifier,
     pub children: Vec<ClassNode>,
+}
+
+impl ClassNode {
+    fn get_description(&self, text: &TextRepository) -> HashMap<String, ClassTreeDescription> {
+        let mut description = HashMap::new();
+        description.insert(
+            self.name.to_string(),
+            ClassTreeDescription {
+                name: text.get_message(self.name, None),
+                detail: text.get_attr(self.name, "desc", None),
+            },
+        );
+        for c in self.children.iter() {
+            description.extend(c.get_description(text));
+        }
+        description
+    }
 }
 
 fn class_leaf(name: ClassIdentifier) -> ClassNode {
@@ -86,16 +107,31 @@ fn test_show_default_classes() {
     println!("{:#?}", classes);
 }
 
+#[derive(Default, Debug, Clone)]
+pub struct ClassTreeDescription {
+    pub name: String,
+    pub detail: String,
+}
+
 #[derive(Debug, Clone)]
 pub struct ClassTree {
-    pub root: ClassNode
+    pub root: ClassNode,
 }
 
 impl Default for ClassTree {
     fn default() -> Self {
-        Self {
-            root: default_class_node()
-        }
+        Self::new()
     }
 }
 
+impl ClassTree {
+    pub fn new() -> ClassTree {
+        Self {
+            root: default_class_node(),
+        }
+    }
+
+    pub fn get_descriptions(&self, text: &TextRepository) -> HashMap<String, ClassTreeDescription> {
+        self.root.get_description(text)
+    }
+}
