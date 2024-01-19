@@ -35,7 +35,8 @@ impl assets_manager::Compound for LanguagePack {
 
         let mut bundle = FluentBundle::new_concurrent(vec![locale.clone()]);
         cache
-            .load_dir::<FluentFilePath>(&["language.", id].concat(), true)?
+            .load_rec_dir::<FluentFilePath>(&["language.", id].concat())?
+            .read()
             .ids()
             .flat_map(|id| load_ftl(&cache, id))
             .map(|lang_file| FluentResource::try_new(lang_file).unwrap())
@@ -147,7 +148,7 @@ impl LanguageFileDataSource {
         LanguageFileDataSource
     }
 
-    pub fn get_language_pack(&self, lang: LanguageIdentifier) -> Handle<'static, LanguagePack> {
+    pub fn get_language_pack(&self, lang: LanguageIdentifier) -> &'static Handle<LanguagePack> {
         ASSETS.load(&lang.to_string()).unwrap()
     }
 }

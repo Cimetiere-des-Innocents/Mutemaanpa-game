@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::io::{stdin, stdout, Write};
+use std::process::exit;
 
 use anyhow::anyhow;
 use anyhow::Result;
@@ -12,6 +13,7 @@ use tracing::info;
 enum Command {
     ChangeLanguage(String),
     PrintClasses,
+    QuitGame,
 }
 
 fn main() {
@@ -86,6 +88,7 @@ fn parse_user_input(s: String) -> Result<Command> {
                 .to_string(),
         )),
         Some("print-classes") => Ok(Command::PrintClasses),
+        Some("quit-game") => Ok(Command::QuitGame),
         Some(cmd) => {
             info!("Unrecognized user input: {}", cmd);
             Err(anyhow!("Unrecognized user input: {}", cmd))
@@ -97,12 +100,18 @@ fn parse_user_input(s: String) -> Result<Command> {
     }
 }
 
+const EXIT_SUCCESS: i32 = 0;
+
 fn execute_cmd(cmd: Command, game_state: &mut GameState) {
     match cmd {
         Command::ChangeLanguage(lang) => game_state.command_handler(
             mutemaanpa_lib::game_state::Command::ChangeLanguage(lang.parse().unwrap()),
         ),
         Command::PrintClasses => print_class_tree(game_state),
+        Command::QuitGame => {
+            println!("We bid you farewell!");
+            exit(EXIT_SUCCESS)
+        }
     }
 }
 

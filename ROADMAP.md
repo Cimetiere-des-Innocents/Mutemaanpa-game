@@ -3,7 +3,7 @@
 ## 0.0.1
 
 - [x] Create a basic project structure
-- []  i18n: show some text in different languages
+- [x]  i18n: show some text in different languages
   - [x] show them in screen
   - [x] read config from a config file
   - [x] change language in runtime
@@ -15,7 +15,13 @@
 ## 0.0.2
 
 - [] dialogue system
+    - [] design a S-expression scripting system
+    - [] let it support simple sequential dialogue
+    - [] let it support branches
+    - [] let it support recursion
+    - [] let it support side effects
 
 ## 0.0.3
 
 - [] add player
+    - [] add sqlite3 to persist data (as a data source)
