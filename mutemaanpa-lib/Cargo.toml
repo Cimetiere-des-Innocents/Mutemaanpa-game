@@ -10,7 +10,7 @@ name = "mutemaanpa_lib"
 
 [dependencies]
 # Resource management
-assets_manager = {version = "0.10.2", features = ["yaml", "hot-reloading"]}
+assets_manager = {version = "0.11.2", features = ["yaml", "hot-reloading"]}
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
 serde-lexpr = "0.1.3"
