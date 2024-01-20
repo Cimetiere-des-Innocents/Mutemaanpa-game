@@ -39,9 +39,46 @@
 //!     [else "hello"]
 //! )
 
-use std::str::Chars;
+use std::{fmt::Debug, str::Chars};
 
 use tracing::info;
+
+use crate::data::{repository::script::ScriptRepository, source::script::Script};
+
+/// Director wires the scripting system, and tells client what to display.
+/// How to display, surely, is not director's responsibility.
+pub struct Director {
+    _script_repository: ScriptRepository,
+    current_script: Script,
+    remaining: usize,
+}
+
+impl Director {
+    const GAME_ENDED: &str = "Game ended!";
+
+    pub fn new(mut _script_repository: ScriptRepository, entry: &str) -> Director {
+        let current_script = _script_repository.get_script(entry);
+        Director {
+            _script_repository,
+            remaining: current_script.0.len(),
+            current_script,
+        }
+    }
+
+    pub fn next_line(&mut self) -> String {
+        let mut script = self.current_script.0.chars();
+        if self.remaining != self.current_script.0.len() {
+            script.nth(self.current_script.0.len() - self.remaining - 1);
+        }
+        let mut lexer = Lexer::new(script);
+        let ret = lexer
+            .try_parse_token()
+            .map(|x| format!("{:?}", x))
+            .unwrap_or(Self::GAME_ENDED.to_string());
+        self.remaining = lexer.remaining();
+        ret
+    }
+}
 
 #[derive(Debug)]
 pub struct Lexer<'a> {
@@ -64,14 +101,26 @@ impl<'a> Lexer<'a> {
     pub fn parse_script(&mut self) -> Vec<Token> {
         let mut tokens = Vec::new();
         self.eat_while(predicates::is_whitespace);
-        while !self.is_eof() {
-            tokens.push(self.parse_token());
-            self.eat_while(predicates::is_whitespace);
+        while let Some(token) = self.try_parse_token() {
+            tokens.push(token);
         }
         tokens
     }
 
-    pub fn parse_token(&mut self) -> Token {
+    pub fn try_parse_token(&mut self) -> Option<Token> {
+        self.eat_while(predicates::is_whitespace);
+        if self.is_eof() {
+            None
+        } else {
+            Some(self.parse_token())
+        }
+    }
+
+    pub fn remaining(self) -> usize {
+        self.script.count()
+    }
+
+    fn parse_token(&mut self) -> Token {
         match self.peek() {
             ';' => {
                 info!("parsed comment");
@@ -85,7 +134,7 @@ impl<'a> Lexer<'a> {
                 assert_eq!(self.consume().unwrap(), '\"');
                 Token::String(s)
             }
-            c  => panic!("unexpected token: {}", c),
+            c => panic!("unexpected token: {}", c),
         }
     }
 

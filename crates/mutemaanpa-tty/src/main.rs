@@ -12,6 +12,7 @@ use tracing::info;
 #[derive(Debug, Clone)]
 enum Command {
     ChangeLanguage(String),
+    GetNextLine,
     PrintClasses,
     QuitGame,
 }
@@ -89,6 +90,7 @@ fn parse_user_input(s: String) -> Result<Command> {
         )),
         Some("print-classes") => Ok(Command::PrintClasses),
         Some("quit-game") => Ok(Command::QuitGame),
+        Some("next-line") => Ok(Command::GetNextLine),
         Some(cmd) => {
             info!("Unrecognized user input: {}", cmd);
             Err(anyhow!("Unrecognized user input: {}", cmd))
@@ -112,7 +114,12 @@ fn execute_cmd(cmd: Command, game_state: &mut GameState) {
             println!("We bid you farewell!");
             exit(EXIT_SUCCESS)
         }
+        Command::GetNextLine => print_next_line(game_state),
     }
+}
+
+fn print_next_line(game_state: &mut GameState) {
+    println!("{}", game_state.get_next_line());
 }
 
 // ................................. Update ...................................

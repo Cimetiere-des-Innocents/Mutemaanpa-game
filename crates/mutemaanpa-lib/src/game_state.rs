@@ -1,8 +1,14 @@
 use std::collections::HashMap;
 
 use crate::{
-    data::{repository::text::TextRepository, source::language::LanguageFileDataSource},
-    gameplay::class::{ClassTree, ClassTreeDescription},
+    data::{
+        repository::{script::ScriptRepository, text::TextRepository},
+        source::{language::LanguageFileDataSource, script::ScriptFileDataSource},
+    },
+    gameplay::{
+        class::{ClassTree, ClassTreeDescription},
+        script::Director,
+    },
     setting::Setting,
 };
 use tracing::info;
@@ -26,6 +32,7 @@ pub struct GameState {
     setting: Setting,
     class_tree: ClassTree,
     pub text: TextRepository,
+    director: Director,
 }
 
 impl Default for GameState {
@@ -42,12 +49,17 @@ impl Default for GameState {
         };
         setting.save().expect("setting configuration cannot save");
         let text_source = LanguageFileDataSource::new();
+        let script_source = ScriptFileDataSource::new();
         let mut text = TextRepository::new(text_source);
+        let script_repo = ScriptRepository::new(script_source);
+
+        let director = Director::new(script_repo, &setting.gameplay.entry_point);
         text.load(setting.language.language.parse().unwrap());
         Self {
             setting,
             class_tree: ClassTree::default(),
             text,
+            director,
         }
     }
 }
@@ -63,6 +75,10 @@ impl GameState {
             &self.class_tree,
             self.class_tree.get_descriptions(&self.text),
         )
+    }
+
+    pub fn get_next_line(&mut self) -> String {
+        self.director.next_line()
     }
 
     pub fn command_handler(&mut self, command: Command) {
