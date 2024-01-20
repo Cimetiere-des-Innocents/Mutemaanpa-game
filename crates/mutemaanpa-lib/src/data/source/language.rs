@@ -141,6 +141,7 @@ impl assets_manager::Asset for LanguageManifest {
     type Loader = assets_manager::loader::YamlLoader;
 }
 
+#[derive(Debug, Default)]
 pub struct LanguageFileDataSource;
 
 impl LanguageFileDataSource {
@@ -153,8 +154,3 @@ impl LanguageFileDataSource {
     }
 }
 
-impl Default for LanguageFileDataSource {
-    fn default() -> Self {
-        Self::new()
-    }
-}
