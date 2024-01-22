@@ -22,7 +22,7 @@ pub struct TextRepository {
     first_language: LanguageIdentifier,
 }
 
-type I18nHandles = HashMap<LanguageIdentifier, Handle<'static, LanguagePack>>;
+type I18nHandles = HashMap<LanguageIdentifier, &'static Handle<LanguagePack>>;
 type I18nWatchers = HashMap<LanguageIdentifier, ReloadWatcher<'static>>;
 
 static ENGLISH: Lazy<LanguageIdentifier> =

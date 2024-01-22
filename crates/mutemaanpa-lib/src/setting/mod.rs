@@ -1,12 +1,14 @@
 use serde::{Deserialize, Serialize};
 
-use self::language::LanguageSetting;
+use self::{gameplay::GameplaySetting, language::LanguageSetting};
 
+mod gameplay;
 mod language;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Setting {
     pub language: language::LanguageSetting,
+    pub gameplay: gameplay::GameplaySetting,
     path: String,
 }
 
@@ -22,6 +24,7 @@ impl Setting {
     pub fn new(path: &str) -> Setting {
         Self {
             language: LanguageSetting::default(),
+            gameplay: GameplaySetting::default(),
             path: path.to_string(),
         }
     }
