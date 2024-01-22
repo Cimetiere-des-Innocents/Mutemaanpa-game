@@ -1,2 +1,2 @@
-pub mod text;
 pub mod script;
+pub mod text;

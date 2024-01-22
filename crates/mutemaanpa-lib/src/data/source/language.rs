@@ -153,4 +153,3 @@ impl LanguageFileDataSource {
         ASSETS.load(&lang.to_string()).unwrap()
     }
 }
-

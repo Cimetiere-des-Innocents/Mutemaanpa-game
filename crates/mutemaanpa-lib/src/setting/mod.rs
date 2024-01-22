@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use self::{language::LanguageSetting, gameplay::GameplaySetting};
+use self::{gameplay::GameplaySetting, language::LanguageSetting};
 
-mod language;
 mod gameplay;
+mod language;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Setting {

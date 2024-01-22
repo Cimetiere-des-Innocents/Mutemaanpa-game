@@ -43,7 +43,10 @@ use std::{fmt::Debug, str::Chars};
 
 use tracing::info;
 
-use crate::data::{repository::script::ScriptRepository, source::script::Script};
+use crate::data::{
+    repository::{script::ScriptRepository, text::TextRepository},
+    source::script::Script,
+};
 
 /// Director wires the scripting system, and tells client what to display.
 /// How to display, surely, is not director's responsibility.
@@ -65,18 +68,18 @@ impl Director {
         }
     }
 
-    pub fn next_line(&mut self) -> String {
+    pub fn next_line(&mut self, text: &TextRepository) -> String {
         let mut script = self.current_script.0.chars();
         if self.remaining != self.current_script.0.len() {
             script.nth(self.current_script.0.len() - self.remaining - 1);
         }
         let mut lexer = Lexer::new(script);
-        let ret = lexer
-            .try_parse_token()
-            .map(|x| format!("{:?}", x))
-            .unwrap_or(Self::GAME_ENDED.to_string());
+        let ret = lexer.try_parse_token();
         self.remaining = lexer.remaining();
-        ret
+        match ret {
+            Some(Token::String(s)) => text.get_message(&s, None),
+            _ => Self::GAME_ENDED.to_string(),
+        }
     }
 }
 

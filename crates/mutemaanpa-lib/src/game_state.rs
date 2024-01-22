@@ -78,7 +78,7 @@ impl GameState {
     }
 
     pub fn get_next_line(&mut self) -> String {
-        self.director.next_line()
+        self.director.next_line(&self.text)
     }
 
     pub fn command_handler(&mut self, command: Command) {
